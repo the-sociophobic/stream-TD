@@ -15,8 +15,8 @@ export default class Header extends Component {
           <h3 className="h3">Not to scale</h3>
         </div>
         <div className="header__links">
-          {/* <Link to="/">Спектакль</Link>
-          <Link to="/admin">Админ панель</Link> */}
+          <Link to="/">Спектакль</Link>
+          <Link to="/admin">Админ панель</Link>
         </div>
       </div>
     </div>

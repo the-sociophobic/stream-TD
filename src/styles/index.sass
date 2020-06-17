@@ -40,12 +40,18 @@
     @extend .d-flex
     @extend .flex-column
     @extend .justify-content-center
-    &__login
-      &__error
+    &__message
+      @extend .mb-5
+      @extend .mt-5
+      text-align: center
+      &--alert
+        @extend .text-info
+      &--error
         @extend .text-danger
-        @extend .mb-5
-        text-align: center
-
+    &__login
+    &__spekt
+      &__instructions
+        
   .admin
     
 

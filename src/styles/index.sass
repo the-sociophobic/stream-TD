@@ -1,0 +1,148 @@
+@import '~bootstrap/scss/bootstrap.scss'
+
+.App
+  width: 100vw
+  height: 100vh
+  @extend .d-flex
+  @extend .flex-column
+  .container
+    @extend .flex-grow-1
+    overflow-y: scroll
+
+
+  .header
+    width: 100vw
+    height: 80px
+    border-bottom: 1px solid gray
+    margin-bottom: 20px
+    .container
+      @extend .d-flex
+      height: 100%
+    &__logo, &__links
+      height: 100%
+      @extend .d-flex
+      @extend .justify-content-between
+      @extend .align-items-center
+      @extend .flex-row
+    &__logo
+      @extend .mr-auto
+      img
+        height: 70%
+        width: auto  
+        margin-right: 50px
+    &__links
+      a
+        margin-left: 20px
+    
+  .spekt
+    width: 100%
+    height: 100%
+    @extend .d-flex
+    @extend .flex-column
+    @extend .justify-content-center
+    &__login
+      &__error
+        @extend .text-danger
+        @extend .mb-5
+        text-align: center
+
+  .admin
+    
+
+
+
+
+$input-height: 40px
+.input
+  width: 100%
+  line-height: $input-height
+  padding: 0 10px
+  font-size: 16px
+  outline: none
+  border: none
+  background: white
+  -webkit-appearance: none
+
+.form-group
+  position: relative
+  margin-bottom: 30px
+  &__label
+    position: absolute
+    font-size: 12px
+    top: -25px
+    left: 15px
+  &__input
+    @extend .input
+    border: 2px solid gray
+    border-radius: 3px
+    position: relative
+    &::placeholder
+      color: #b1b1b1
+
+.button
+  cursor: pointer
+  outline: none
+  border: none
+  background-color: white
+  &:disabled
+    opacity: .5
+    cursor: not-allowed
+  &--main
+    width: 100%
+    padding: 10px 0
+    text-align: center
+    font-weight: 600
+    color: white
+    background-color: black
+  &--cross
+    position: absolute
+    top: 5px
+    right: 15px
+    width: 20px
+    height: 20px
+    z-index: 1000
+    &::after, &::before
+      content: ""
+      position: absolute
+      top: 10px
+      left: 0
+      background-color: black
+      width: 15px
+      height: 2px
+    &::after
+      transform: rotate(45deg)
+    &::before
+      transform: rotate(-45deg)
+
+
+.loader
+  position: fixed
+  z-index: 1000
+  top: 0
+  left: 0
+  width: 100vw
+  height: 100vh
+  background-color: white
+  transition: opacity 1s
+  &--transparent
+    opacity: 0
+  &--hidden
+    @extend .d-none
+  img
+    width: 25%
+    max-width: 250px
+    height: auto
+    position: absolute
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)
+    animation: flash .8s ease-in-out
+    animation-iteration-count: infinite 
+    @keyframes flash
+      0%
+        opacity: 0.3
+      50%
+        opacity: 1
+      100%
+        opacity: 0.3
+

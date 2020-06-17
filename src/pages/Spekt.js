@@ -195,7 +195,7 @@ class Spekt extends Component {
         value={this.state.ticket}
         onChange={value => this.setState({ticket: value})}
       />
-      <Link to={`/?ticket=${this.state.ticket}`}>
+      <Link to={`/not-to-scale/?ticket=${this.state.ticket}`}>
         <button
           className="button button--main"
           onClick={() => this.auth()}

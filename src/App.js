@@ -30,10 +30,10 @@ class App extends Component {
           <Header />
           <div className="container">
             <Switch>
-              <Route exact path="/">
+              <Route exact path="/not-to-scale/">
                 <Spekt />
               </Route>
-              <Route path="/admin">
+              <Route path="/not-to-scale/admin">
                 <Admin />
               </Route>
             </Switch>

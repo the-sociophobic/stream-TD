@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.css": "/not-to-scale-td/static/css/main.1d720489.chunk.css",
-    "main.js": "/not-to-scale-td/static/js/main.86bdc471.chunk.js",
-    "main.js.map": "/not-to-scale-td/static/js/main.86bdc471.chunk.js.map",
-    "runtime-main.js": "/not-to-scale-td/static/js/runtime-main.999b8b20.js",
-    "runtime-main.js.map": "/not-to-scale-td/static/js/runtime-main.999b8b20.js.map",
-    "static/js/2.2394dc58.chunk.js": "/not-to-scale-td/static/js/2.2394dc58.chunk.js",
-    "static/js/2.2394dc58.chunk.js.map": "/not-to-scale-td/static/js/2.2394dc58.chunk.js.map",
-    "index.html": "/not-to-scale-td/index.html",
-    "precache-manifest.600d997f5e08cc81358390c5bb1836c4.js": "/not-to-scale-td/precache-manifest.600d997f5e08cc81358390c5bb1836c4.js",
-    "service-worker.js": "/not-to-scale-td/service-worker.js",
-    "static/css/main.1d720489.chunk.css.map": "/not-to-scale-td/static/css/main.1d720489.chunk.css.map",
-    "static/js/2.2394dc58.chunk.js.LICENSE.txt": "/not-to-scale-td/static/js/2.2394dc58.chunk.js.LICENSE.txt",
-    "static/media/logoVI.svg": "/not-to-scale-td/static/media/logoVI.3ede88a1.svg"
+    "main.css": "/not-to-scale-TD/static/css/main.1d720489.chunk.css",
+    "main.js": "/not-to-scale-TD/static/js/main.49c1f461.chunk.js",
+    "main.js.map": "/not-to-scale-TD/static/js/main.49c1f461.chunk.js.map",
+    "runtime-main.js": "/not-to-scale-TD/static/js/runtime-main.f6368ef6.js",
+    "runtime-main.js.map": "/not-to-scale-TD/static/js/runtime-main.f6368ef6.js.map",
+    "static/js/2.2394dc58.chunk.js": "/not-to-scale-TD/static/js/2.2394dc58.chunk.js",
+    "static/js/2.2394dc58.chunk.js.map": "/not-to-scale-TD/static/js/2.2394dc58.chunk.js.map",
+    "index.html": "/not-to-scale-TD/index.html",
+    "precache-manifest.08eab02de5c83ac29c5a40a7e77c615e.js": "/not-to-scale-TD/precache-manifest.08eab02de5c83ac29c5a40a7e77c615e.js",
+    "service-worker.js": "/not-to-scale-TD/service-worker.js",
+    "static/css/main.1d720489.chunk.css.map": "/not-to-scale-TD/static/css/main.1d720489.chunk.css.map",
+    "static/js/2.2394dc58.chunk.js.LICENSE.txt": "/not-to-scale-TD/static/js/2.2394dc58.chunk.js.LICENSE.txt",
+    "static/media/logoVI.svg": "/not-to-scale-TD/static/media/logoVI.3ede88a1.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.999b8b20.js",
+    "static/js/runtime-main.f6368ef6.js",
     "static/js/2.2394dc58.chunk.js",
     "static/css/main.1d720489.chunk.css",
-    "static/js/main.86bdc471.chunk.js"
+    "static/js/main.49c1f461.chunk.js"
   ]
 }

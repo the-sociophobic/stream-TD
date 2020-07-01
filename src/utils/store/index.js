@@ -6,7 +6,7 @@ const initialState = stateRefs => ({
   store: new storeClass({
     stateRefs: stateRefs,
     // DBlink: "https://schedule.tochkadostupa.spb.ru/api/",
-    DBlink: "https://localhost:3000/api/",
+    DBlink: "http://localhost:3000/not-to-sale/api",
   }),
 })
 

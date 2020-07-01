@@ -6,6 +6,8 @@ import withRouter from 'components/withRouterAndRef'
 import Loader from 'components/Loader'
 import Input from 'components/Input'
 
+import countable from 'utils/countable'
+
 
 const texts = [
   "5. включите на телефоне режим не беспокоить, отключите уведомления",
@@ -23,6 +25,7 @@ class Spekt extends Component {
     super(props)
 
     const ticket = new URLSearchParams(window.location.search).get("ticket")
+    const userId = new URLSearchParams(window.location.search).get("userId")
     const authorised = !ticket ? "none" : "pending"
 
     this.state = {
@@ -39,6 +42,7 @@ class Spekt extends Component {
         pending
       */
       authorised: authorised,
+      userId: userId,
 
       /*
         authorised
@@ -69,14 +73,14 @@ class Spekt extends Component {
   auth = async () => {
     this.props.history.location.search = `?=${this.state.ticket}`
     this.setState({authorised: "pending"})
-
-    const res = (await this.context.store.authUser(this.state.ticket)).token
-
-    this.setState({authorised: res})
-
-    if (res === "real") {
+    
+    const res = (await this.context.store.authUser(this.state.ticket, this.state.userId))
+    if (res.userId) {
+      this.setState({authorised: "real"})
       setTimeout(() => this.setState({secondUser: "authorised"}), oneSecond * 2)
     }
+    else
+      this.setState({authorised: res.token})
   }
 
 
@@ -135,21 +139,49 @@ class Spekt extends Component {
       clearInterval(this.restartInterval)
 
     this.restartInterval = setInterval(() => {
-      if (this.state.restartCountDown > 0) {
+      if (this.state.restartCountDown > 1) {
         this.setState({
           message: `Приятного прослушивания. В течение ${this.state.restartCountDown - 1} секунд вы можете перезапустить прослушивание`,
           restartCountDown: this.state.restartCountDown - 1,    
         })
         console.log(this.state.restartCountDown)
       } else {
-        this.setState({
-          buttonStatus: "in-process",
-          buttonText: "До окончания N минут N секунд",
-          buttonDisabled: true,
-        })
+        this.initializePlayInterval()
         clearInterval(this.restartInterval)
         this.restartInterval = null
       }
+    }, oneSecond)
+  }
+
+  initializePlayInterval = () => {
+    if (this.playInterval)
+      return
+
+    this.setState({
+      buttonStatus: "in-process",
+      message: "До окончания спектакля N минут N секунд",
+      buttonText: `${countable(Math.floor((this.audio.duration - this.audio.currentTime) / 60))} ${(this.audio.duration - this.audio.currentTime) % 60}`,
+      buttonDisabled: true,
+    })
+
+    // this.audio.play()
+
+    const minutesDuration = Math.floor(this.audio.duration / 60)
+    const secondsDuration = this.audio.duration % 60
+
+    this.playInterval = setInterval(() => {
+      const tillEnd = this.audio.duration - this.audio.currentTime
+      const minutes = Math.floor(this.audio.currentTime / 60)
+      const seconds = this.audio.currentTime % 60
+      const minutesTillEnd = Math.floor(tillEnd / 60)
+      const secondsTillEnd = tillEnd % 60
+
+      this.setState({
+        buttonStatus: "in-process",
+        buttonText: `${minutes}:${seconds} / ${minutesDuration}:${secondsDuration}`,
+        message: `До конца спектакля ${countable(minutesTillEnd, ["минута", "минуты", "минут"])} ${countable(secondsTillEnd, ["секунда", "секунды", "секунд"])}`,
+        buttonDisabled: true,
+      })
     }, oneSecond)
   }
 
@@ -189,8 +221,8 @@ class Spekt extends Component {
       {this.state.authorised === "fake" &&
         <div className="spekt__message spekt__message--error">билета с таким номером не существует</div>}
 
+      <div className="mb-4">Введите номер вашего билета</div>
       <Input
-        label="Введите номер вашего билета"
         placeholder="например: Nihi1I57R4v3"
         value={this.state.ticket}
         onChange={value => this.setState({ticket: value})}
@@ -206,39 +238,43 @@ class Spekt extends Component {
     </div>
 
   renderSpekt = () =>
-    <div className="spekt__spekt">
-      <div className="spekt__spekt__instructions">
-        1. Чтобы спектакль начался вам нужно одновременно нажать на play
-        <br />
-        2. Нажмите на play
-        <br />
-        3. После у вас начнётся обратный отсчёт, вам нужно нажать второй раз на play максимально одновременно
-        <br />
-        4. Обратите внимание, что посмотреть спектакль повторно по одному билету у вас не получится
+    <div className="container">
+      <div className="spekt__spekt">
+        <div className="spekt__spekt__instructions">
+          1. Чтобы спектакль начался вам нужно одновременно нажать на play
+          <br />
+          2. Нажмите на play
+          <br />
+          3. После у вас начнётся обратный отсчёт, вам нужно нажать второй раз на play максимально одновременно
+          <br />
+          4. Обратите внимание, что посмотреть спектакль повторно по одному билету у вас не получится
+        </div>
+        <div className="spekt__message spekt__message--alert">
+          {this.state.message}
+        </div>
+        <button
+          className="button button--main"
+          onClick={() => this.pressButton()}
+          disabled={this.state.buttonDisabled}
+        >
+          {this.state.buttonText}
+        </button>
       </div>
-      <div className="spekt__message spekt__message--alert">
-        {this.state.message}
-      </div>
-      <button
-        className="button button--main"
-        onClick={() => this.pressButton()}
-        disabled={this.state.buttonDisabled}
-      >
-        {this.state.buttonText}
-      </button>
     </div>
 
   render = () =>
-    <div className="spekt">
-      <Loader disappear={this.state.authorised !== "pending"} />
-      {this.state.authorised === "real" ?
-        this.state.secondUser === "pending" ?
-          <div className="spekt__login__alert">подождите, пока второй пользователь залогинится...</div>
+    <div className="container">
+      <div className="spekt">
+        <Loader disappear={this.state.authorised !== "pending"} />
+        {this.state.authorised === "real" ?
+          this.state.secondUser === "pending" ?
+            <div className="spekt__login__alert">подождите, пока второй пользователь залогинится...</div>
+            :
+            this.renderSpekt()
           :
-          this.renderSpekt()
-        :
-        this.renderLogin()
-      }
+          this.renderLogin()
+        }
+      </div>
     </div>
 }
 

@@ -8,7 +8,7 @@ import {
 import { StoreContext, initialState } from 'utils/store'
 import Spekt from 'pages/Spekt'
 import Admin from 'pages/Admin'
-import Header from 'components/Header'
+import Footer from 'components/Footer'
 
 import './styles/index.sass'
 
@@ -27,20 +27,18 @@ class App extends Component {
     <Router>
       <StoreContext.Provider value={this.state}>
         <div className="App">
-          <Header />
-          <div className="container">
-            <Switch>
-              <Route exact path="/not-to-scale/">
-                <Spekt />
-              </Route>
-              <Route path="/not-to-scale/admin">
-                <Admin />
-              </Route>
-            </Switch>
-          </div>
+          <Switch>
+            <Route exact path="/not-to-scale/">
+              <Spekt />
+            </Route>
+            <Route path="/not-to-scale/admin">
+              <Admin />
+            </Route>
+          </Switch>
+          <Footer />
         </div>
       </StoreContext.Provider>
-    // </Router>
+    </Router>
 }
 
 export default App

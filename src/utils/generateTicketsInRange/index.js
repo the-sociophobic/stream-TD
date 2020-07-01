@@ -2,7 +2,7 @@ import transliterate from './transliterate'
 import texts from './texts'
 
 
-const maxLength = 70
+const maxLength = 17
 
 const chars = [
   'а',
@@ -61,7 +61,7 @@ const hashArrayByChar = () =>
       .reduce((a, b) => [...a, ...b]).join(''))
     .match(new RegExp(`.{1,${maxLength}}`, "g"))
     .map((string25, index) => transliterate(string25, index))
-    .slice(0, -1)
+    // .slice(0, -1)
 
 
 const generateTicketsInRange = (from, length, method) => {

@@ -35,7 +35,7 @@ export default class Input extends Component {
       <input
         ref={this.inputFieldRef}
         type={this.props.password ? "password" : "text"}
-        className="form-group__input"
+        className={`form-group__input ${this.props.className}`}
         placeholder={this.props.placeholder}
         required={this.props.required}
         value={this.props.value}

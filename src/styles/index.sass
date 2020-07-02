@@ -1,48 +1,88 @@
 @import '~bootstrap/scss/bootstrap.scss'
 
+@font-face
+  font-family: "Formular"
+  src: url("./fonts/Formular.ttf")
+
+@font-face
+  font-family: "Formular-Bold"
+  src: url("./fonts/Formular-Bold.ttf")
+
+
 *
+  font-family: "Formular", sans-serif
   padding: 0
   margin: 0
   box-sizing: border-box
+  cursor: url(./img/cursor.svg) 0 18, auto
+  @extend .noselect
 
+  a
+    cursor: pointer
+  b
+    font-family: "Formular-Bold", sans-serif
+
+.noselect
+  -webkit-touch-callout: none;  /* iOS Safari */
+  -webkit-user-select: none;    /* Safari */
+  -khtml-user-select: none;     /* Konqueror HTML */
+  -moz-user-select: none;       /* Firefox */
+  -ms-user-select: none;        /* Internet Explorer/Edge */
+  user-select: none;            /* Non-prefixed version, currently supported by Chrome and Opera */
+
+.desktop-only
+  @media screen and ( max-width: 1024px )
+    display: none
+.mobile-only
+  @media screen and ( min-width: 1025px )
+    display: none
+
+    
 
 .App
   width: 100vw
   height: 100vh
   @extend .d-flex
   @extend .flex-column
-  .container
+  position: relative
+  .content
     @extend .flex-grow-1
+    padding: 30px 0
     overflow-y: scroll
-    width: 50%
-    @media screen and ( max-width: 1200px ) and ( min-width: 992px )
-      width: 60%
-
 
   .header
     width: 100vw
     height: 80px
-    border-bottom: 1px solid gray
-    margin-bottom: 20px
+    font-size: 32px
     .container
       @extend .d-flex
+      @extend .justify-content-start
+      @extend .align-items-center
       height: 100%
-    &__logo, &__links
-      height: 100%
+
+  .footer
+    width: 100vw
+    height: 80px
+    .container
       @extend .d-flex
       @extend .justify-content-between
       @extend .align-items-center
-      @extend .flex-row
+      height: 100%
     &__logo
       @extend .mr-auto
+      height: 33%
+      width: auto
       img
-        height: 70%
-        width: auto  
-        margin-right: 50px
+        height: 100%
+        width: auto
+        cursor: pointer
     &__links
       a
-        margin-left: 20px
+        text-decoration: underline
+        color: black
     
+
+
   .spekt,
   .admin
     width: 100%
@@ -61,6 +101,14 @@
       &--error
         @extend .text-danger
     &__login
+      &__desc
+        @extend .mb-4
+      &__pending
+        position: absolute
+        top: 50%
+        left: 50%
+        transform: translate(-50%, -50%)
+        text-align: center
     &__spekt
       &__instructions
         
@@ -70,178 +118,67 @@
 
 
 
-$input-height: 40px
+$input-height: 260px
 .input
   width: 100%
-  line-height: $input-height
+  height: $input-height
+  line-height: 2
   padding: 0 10px
   font-size: 16px
   outline: none
   border: none
-  background: white
   -webkit-appearance: none
+  cursor: text
+  background-color: rgba(0, 0, 0, 0)
 
 .form-group
   position: relative
-  margin-bottom: 30px
-  &__label
-    position: absolute
-    font-size: 12px
-    top: -25px
-    left: 15px
+  margin-bottom: -1px
+  z-index: 100
   &__input
     @extend .input
-    border: 2px solid gray
-    border-radius: 3px
+    text-align: center
+    color: black
+    border: 1px solid black
+    border-radius: $input-height
     position: relative
     &::placeholder
-      color: #b1b1b1
+      color: black
+    &--danger
+      color: #ff0000
+      border-color: #ff0000
 
 .button
   cursor: pointer
-  outline: none
+  outline: none !important
   border: none
   background-color: white
+  background-color: rgba(0, 0, 0, 0)
   &:disabled
-    opacity: .5
     cursor: not-allowed
   &--main
     width: 100%
     padding: 10px 0
     text-align: center
-    font-weight: 600
-    color: white
-    background-color: black
-  &--cross
-    position: absolute
-    top: 5px
-    right: 15px
-    width: 20px
-    height: 20px
-    z-index: 1000
-    &::after, &::before
-      content: ""
-      position: absolute
-      top: 10px
-      left: 0
-      background-color: black
-      width: 15px
-      height: 2px
-    &::after
-      transform: rotate(45deg)
-    &::before
-      transform: rotate(-45deg)
+    color: black
+    background-color: white
+    border: 1px solid black
+    border-radius: $input-height
+    background-color: rgba(0, 0, 0, 0)
+    &:disabled
+      color: #BCBCBC
+      border-color: #BCBCBC
+    &--danger
+      color: #ff0000
+      border-color: #ff0000
+      cursor: not-allowed !important
 
+  
 
-.loader
+.canvas
   position: fixed
-  z-index: 1000
-  top: 0
-  left: 0
   width: 100vw
   height: 100vh
-  background-color: white
-  transition: opacity 1s
-  &--transparent
-    opacity: 0
-  &--hidden
-    @extend .d-none
-  img
-    width: 25%
-    max-width: 250px
-    height: auto
-    position: absolute
-    top: 50%
-    left: 50%
-    transform: translate(-50%, -50%)
-    animation: flash .8s ease-in-out
-    animation-iteration-count: infinite 
-    @keyframes flash
-      0%
-        opacity: 0.3
-      50%
-        opacity: 1
-      100%
-        opacity: 0.3
-
-
-
-
-.ZoomTicket
-  @extend .d-flex 
-  @extend .flex-column 
-  @extend .justify-content-around
-  width: 100vw
-  height: 60vh
-  margin-top: 20vh
-  .container
-    @media screen and ( min-width: 1024px )
-      padding: 0 50px
-  .button
+  canvas
     width: 100%
-    height: 55px
-    line-height: 55px
-    background: black
-    color: white
-    font-weight: 700
-    text-transform: uppercase
-    cursor: pointer
-    outline: none
-    border: none
-    &:disabled
-      opacity: .5
-      cursor: not-allowed
-
-  $input-height: 42px
-  .input
-    width: 100%
-    line-height: $input-height
-    padding: 0 10px
-    font-size: 20px
-    outline: none
-    border: none
-    background: white
-    -webkit-appearance: none
-
-  .form-group
-    // padding: 14px 10px 0
-    // margin: 2px 0 10px
-    position: relative
-    margin-bottom: 0
-    &__label
-      position: absolute
-      font-size: 16px
-      top: -35px
-      left: 10px
-    &__input
-      @extend .input
-      border: 2px solid gray
-      border-radius: 3px
-      position: relative
-      &::placeholder
-        color: #b1b1b1
-
-  &__error
-    font-size: 20px
-    height: 40px
-    line-height: 40px
-  &__ExternalLink
-    font-size: 25px
-    text-decoration: underline
-    text-align: center
-    width: 100%
-    display: block
-  &__tickets
-    width: 100%
-    height: 50vh
-    overflow-y: scroll
-    &__item
-      width: 100%
-      height: 35px
-      line-height: 35px
-      border-bottom: 1px solid gray
-      @extend .d-flex 
-      @extend .flex-row
-      @extend .justify-content-between
-      &__ticketNumber
-      &__zoomURL
+    height: 100%

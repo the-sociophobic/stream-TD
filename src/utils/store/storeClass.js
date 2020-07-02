@@ -1,16 +1,4 @@
 import axios from 'axios'
-import fetch from 'isomorphic-unfetch'
-
-
-const fakeTime = 1500
-
-const tickets = [
-  "real",
-
-  // "fake",
-  "outdated",
-  "many-devices",
-]
 
 
 export default class store {
@@ -19,33 +7,40 @@ export default class store {
 
     axios.defaults.headers.post['Accept'] = "*/*"
     axios.defaults.headers.post['Content-Type'] = "json"
+    axios.defaults.withCredentials = true
   }
 
-  authUser = async (ticket, userId) => {
-    console.log("res")
-    
+  getSessionInfo = async () =>
+    (await axios.get(this.props.DBlink)).data
+
+  login = async (ticket, onSuccess) => {   
     const res = (await axios.post(
-      this.props.DBlink,
-      {
-        ticket: ticket,
-        userId: userId,
-      }
+      this.props.DBlink + '/login',
+      { ticket: ticket },
     )).data
 
+    console.log(res)
 
+    if (res.token === "real")
+      if (res.secondUser === "real")
+        onSuccess && onSuccess()
+      else
+        setInterval(async () => {
+          const res = (await axios.post(
+            this.props.DBlink,
+            { ticket: ticket },
+          )).data
+      
+          if (res.secondUser === "real")
+            onSuccess && onSuccess()
+        }, 2000)
+    
     return res
   }
-    // new Promise((res, rej) => setTimeout(() => res({
-    //   token: tickets.includes(ticket) ? ticket : "fake"
-    // }), fakeTime))
 
-  checkTicket = async ticket =>
-    new Promise((req, res) => setTimeout(() => res(ticket === "123"), fakeTime))
-    // (await axios.post(
-    //   this.props.DBlink,
-    //   {
-    //     ticket: ticket,
+  audioURL = () => this.props.DBlink + '/stream'
 
-    //   }
-    // )).data
+  logout = async () =>
+    await axios
+      .get(this.props.DBlink + '/logout')
 }

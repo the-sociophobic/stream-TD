@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 
-import logoImg from 'img/logoVI.svg'
+import ExternalLink from 'components/ExternalLink'
+import logoImg from 'img/logo.svg'
+import logoSmallImg from 'img/logo-small.svg'
 
 
 export default class Header extends Component {
@@ -10,14 +11,17 @@ export default class Header extends Component {
   render = () =>
     <div className="footer">
       <div className="container">
-        <div className="header__logo">
-          <img src={logoImg} />
-          <h3 className="h3">Not to scale</h3>
+        <div className="footer__logo">
+          <ExternalLink newTab to="https://tochkadostupa.spb.ru">
+            <img className="desktop-only" src={logoImg} />
+            <img className="mobile-only" src={logoSmallImg} />
+          </ExternalLink>
         </div>
-        {/* <div className="header__links">
-          <Link to="/not-to-scale/">Спектакль</Link>
-          <Link to="/not-to-scale/admin">Админ панель</Link>
-        </div> */}
+        <div className="footer__links">
+          <ExternalLink newTab to="https://tochkadostupa.spb.ru/events/not_to_scale">
+            о проекте
+          </ExternalLink>
+        </div>
       </div>
     </div>
 }

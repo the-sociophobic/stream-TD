@@ -19,7 +19,7 @@ export default class store {
       { ticket: ticket },
     )).data
 
-    console.log(res)
+    // console.log(res)
 
     if (res.token === "real")
       if (res.secondUser === "real")

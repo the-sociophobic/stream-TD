@@ -6,10 +6,13 @@ import {
 } from "react-router-dom"
 
 import { StoreContext, initialState } from 'utils/store'
+import browserType from 'utils/browserType'
+
 import Spekt from 'pages/Spekt'
 import Admin from 'pages/Admin'
 import Footer from 'components/Footer'
 import Canvas from 'components/Canvas'
+import OpenBrowser from 'components/OpenBrowser'
 
 import './styles/index.sass'
 
@@ -29,18 +32,20 @@ class App extends Component {
       <StoreContext.Provider value={this.state}>
         <Canvas />
         <div className="App">
-
-          <div className="content">
-            <Switch>
-              <Route exact path="/not-to-scale/">
-                <Spekt />
-              </Route>
-              <Route path="/not-to-scale/admin">
-                <Admin />
-              </Route>
-            </Switch>
-          </div>
-
+          {browserType() === "uiwebview" ?
+            <OpenBrowser />
+            :
+            <div className="content">
+              <Switch>
+                <Route exact path="/not-to-scale/">
+                  <Spekt />
+                </Route>
+                <Route path="/not-to-scale/admin">
+                  <Admin />
+                </Route>
+              </Switch>
+            </div>
+          }
           <Footer />
         </div>
       </StoreContext.Provider>

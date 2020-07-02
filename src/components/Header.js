@@ -1,7 +1,5 @@
 import React from 'react'
 
-import ExternalLink from 'components/ExternalLink'
-
 
  class Header extends React.Component {
   state = {}

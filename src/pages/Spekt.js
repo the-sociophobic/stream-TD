@@ -6,7 +6,6 @@ import { StoreContext } from 'utils/store'
 import withRouter from 'components/withRouterAndRef'
 import Input from 'components/Input'
 
-import countable from 'utils/countable'
 import secondsParse from 'utils/secondsParse'
 
 
@@ -41,7 +40,8 @@ class Spekt extends Component {
       /*
         never-pressed
         buffering
-        can-start
+        countdown
+        can-play
         can-restart
         in-process
         buy-another-ticket
@@ -72,7 +72,7 @@ class Spekt extends Component {
   login = async () => {
     this.setState({
       authorised: "pending",
-      secondUser: "pending"
+      secondUser: "real"
     })
     
     const res = await this.context.store
@@ -81,13 +81,20 @@ class Spekt extends Component {
         () => this.setState({secondUser: "real"})
       )
 
-    if (res.token === "real")
+    if (res.token === "real") {
       this.setState({
         authorised: "real",
         ticket: res.ticket,
         texts: res.texts,
         left: res.left,
       })
+
+      // console.log(res)
+      this.props.history.push({
+        pathname: this.props.location.path,
+        search: "?" + new URLSearchParams({q: res.userId}).toString()
+      })
+    }
     else
       this.setState({authorised: res.token})
   }
@@ -102,14 +109,29 @@ class Spekt extends Component {
 
         this.audio.addEventListener('canplaythrough', () =>
           this.state.buttonStatus !== "can-restart" &&
-            setTimeout(() =>
+            setTimeout(() => {
               this.setState({
-                buttonStatus: "can-play",
-                buttonDisabled: false,
+                buttonStatus: "countdown",
                 message: `00:00/${secondsParse(this.audio.duration)}`,
-                comment: <>Нажмите <div className="play-symbol" /> чтобы <br />начать спектакль</>
+                // comment: <>Нажмите <div className="play-symbol" /> чтобы <br />начать спектакль</>
+                comment: this.state.texts[0]
               })
-            , oneSecond))
+              
+              this.state.texts.slice(1)
+                .forEach((line, index) =>
+                  setTimeout(() => 
+                    this.setState({comment: line})
+                  , oneSecond * (index + 1)))
+
+              setTimeout(() =>
+                this.setState({
+                  buttonStatus: "can-play",
+                  buttonDisabled: false,
+                })
+              , oneSecond * (this.state.texts.length - 1))
+
+            }, oneSecond))
+
 
         this.audio.addEventListener('ended', () => setTimeout(() => {
           if (this.playInterval)
@@ -152,11 +174,11 @@ class Spekt extends Component {
       buttonStatus: "can-restart",
       buttonDisabled: true,
       message: `${secondsParse(this.audio.currentTime)}/${secondsParse(this.audio.duration)}`,
-      comment: <>Вы можете перезапустить спектакль <br />в течении первых 30 секунд</>,
+      comment: <>Вы можете перезапустить спектакль <br />в течении первых 60 секунд</>,
     })
 
     this.playInterval = setInterval(() => {
-      if (this.audio.currentTime > 30 && this.state.buttonStatus === "can-restart")
+      if (this.audio.currentTime > 60 && this.state.buttonStatus === "can-restart")
         this.setState({
           buttonStatus: "in-process",
           comment: "",
@@ -225,6 +247,12 @@ class Spekt extends Component {
         2. После нажатия начнётся обратный отсчёт, вам нужно нажать второй раз на play максимально одновременно
         <br />
         3. Обратите внимание, что посмотреть спектакль повторно по одному билету у вас не получится
+        {typeof this.state.left !== "undefined" &&
+          this.state.left ?
+            <><br /><br /><b>Пожалуйста, сядьте слева</b></>
+            :
+            <><br /><br /><b>Пожалуйста, сядьте справа</b></>
+          }
       </div>
 
       <div className="spekt__spekt__player">

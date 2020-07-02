@@ -21,9 +21,9 @@ class Admin extends React.Component {
 
   loadData = async () => {
     this.setState({
-      data: await (await fetch("http://localhost:3000/api/nottoscaleticket?limit=5000")).json()
+      data: await (await fetch("https://schedule.tochkadostupa.spb.ru/api/nottoscaleticket?limit=5000")).json()
     })
-    // console.log(await (await fetch("http://localhost:3000/api/nottoscaleticket?limit=5000")).json())
+    // console.log(await (await fetch("https://schedule.tochkadostupa.spb.ru/api/nottoscaleticket?limit=5000")).json())
   }
 
   deleteData = async () => {
@@ -36,7 +36,7 @@ class Admin extends React.Component {
         JSON.stringify(
           await (
             await fetch(
-              "http://localhost:3000/api/nottoscaleticket/destroy/" + data[index].id
+              "https://schedule.tochkadostupa.spb.ru/api/nottoscaleticket/destroy/" + data[index].id
             )
           ).json())}`)      
   }
@@ -46,7 +46,7 @@ class Admin extends React.Component {
 
     for (let index in data)
       console.log(await (await fetch(
-        "http://localhost:3000/api/nottoscaleticket/create?" +
+        "https://schedule.tochkadostupa.spb.ru/api/nottoscaleticket/create?" +
         encodeParams({
           number: data[index][0],
         }))).json())

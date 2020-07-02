@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 
+import Header from 'components/Header'
+
 import { StoreContext } from 'utils/store'
 import withRouter from 'components/withRouterAndRef'
 import Input from 'components/Input'
 
 import countable from 'utils/countable'
+import secondsParse from 'utils/secondsParse'
 
 
 const oneSecond = 1000
@@ -30,7 +33,7 @@ class Spekt extends Component {
       userId: "",
 
       /*
-        authorised
+        real
         pending
       */
       secondUser: "pending",
@@ -45,8 +48,8 @@ class Spekt extends Component {
       */
       buttonStatus: "never-pressed",
 
-      message: "",
-      buttonText: "PLAY",
+      message: "00:00",
+      comment: <>Нажмите <div className="play-symbol" /> чтобы запустить<br />буферизацию</>,
     }
   }
 
@@ -54,15 +57,16 @@ class Spekt extends Component {
     this.getSessionInfo()
 
   getSessionInfo = async () => {
-    console.log("res")
     const res = await this.context.store.getSessionInfo()
-    console.log(res)
 
     this.setState({
       authorised: res.token,
       secondUser: res.secondUser,
       ticket: res.ticket || "",
     })
+
+    if (res.token === "real")
+      setTimeout(() => this.login(), 500)
   }
 
   login = async () => {
@@ -77,7 +81,7 @@ class Spekt extends Component {
         () => this.setState({secondUser: "real"})
       )
 
-    if (res.userId)
+    if (res.token === "real")
       this.setState({
         authorised: "real",
         ticket: res.ticket,
@@ -95,12 +99,27 @@ class Spekt extends Component {
     switch(buttonStatus) {
       case "never-pressed":
         this.audio = new Audio(this.context.store.audioURL())
+
+        this.audio.addEventListener('canplaythrough', () =>
+          this.state.buttonStatus !== "can-restart" &&
+            setTimeout(() =>
+              this.setState({
+                buttonStatus: "can-play",
+                buttonDisabled: false,
+                message: `00:00/${secondsParse(this.audio.duration)}`,
+                comment: <>Нажмите <div className="play-symbol" /> чтобы <br />начать спектакль</>
+              })
+            , oneSecond))
+
         this.audio.addEventListener('ended', () => setTimeout(() => {
+          if (this.playInterval)
+            clearInterval(this.playInterval)
+
           this.setState({
-            buttonDisabled: false,
-            buttonText: "купить билет",
-            message: "Спасибо за просмотр! Хотите посмотреть ещё, купите билет"
+            buttonStatus: "buy-another-ticket",
+            comment: "Спасибо за просмотр! Хотите посмотреть ещё, купите билет"
           })
+
           this.context.store.logout()
         }, oneSecond * 5))
 
@@ -111,77 +130,49 @@ class Spekt extends Component {
         })
         return
       case "can-play":
-        this.audio.play()
-        this.initializeRestartInterval()
-        return
-      case "buy-another-ticket":
-        const win = window.open("https://tochkadostupa.spb.ru/events/not_to_scale", '_blank')
-        win.focus()
+        this.play()
     }
   }
 
   restart = () => {
+    this.audio.pause()
     this.audio.currentTime = 0
-    this.audio.play()
-    this.initializeRestartInterval()
+    if (this.playInterval) {
+      clearInterval(this.playInterval)
+      this.playInterval = null
+    }
+    this.play()
   }
 
-  initializeRestartInterval = () => {
-    this.setState({
-      buttonStatus: "can-restart",
-      message: "Приятного прослушивания. В течение 30 секунд вы можете перезапустить прослушивание",
-      restartCountDown: 30,
-      buttonText: "Перезапустить"
-    })
-
-    if (this.restartInterval)
-      clearInterval(this.restartInterval)
-
-    this.restartInterval = setInterval(() => {
-      if (this.state.restartCountDown > 1) {
-        this.setState({
-          message: `Приятного прослушивания. В течение ${this.state.restartCountDown - 1} секунд вы можете перезапустить прослушивание`,
-          restartCountDown: this.state.restartCountDown - 1,    
-        })
-        console.log(this.state.restartCountDown)
-      } else {
-        this.initializePlayInterval()
-        clearInterval(this.restartInterval)
-        this.restartInterval = null
-      }
-    }, oneSecond)
-  }
-
-  initializePlayInterval = () => {
+  play = () => {
     if (this.playInterval)
       return
 
     this.setState({
-      buttonStatus: "in-process",
-      message: "До окончания спектакля N минут N секунд",
-      buttonText: `${countable(Math.floor((this.audio.duration - this.audio.currentTime) / 60))} ${(this.audio.duration - this.audio.currentTime) % 60}`,
+      buttonStatus: "can-restart",
       buttonDisabled: true,
+      message: `${secondsParse(this.audio.currentTime)}/${secondsParse(this.audio.duration)}`,
+      comment: <>Вы можете перезапустить спектакль <br />в течении первых 30 секунд</>,
     })
 
-    // this.audio.play()
-
-    const minutesDuration = Math.floor(this.audio.duration / 60)
-    const secondsDuration = this.audio.duration % 60
-
     this.playInterval = setInterval(() => {
-      const tillEnd = this.audio.duration - this.audio.currentTime
-      const minutes = Math.floor(this.audio.currentTime / 60)
-      const seconds = this.audio.currentTime % 60
-      const minutesTillEnd = Math.floor(tillEnd / 60)
-      const secondsTillEnd = tillEnd % 60
+      if (this.audio.currentTime > 30 && this.state.buttonStatus === "can-restart")
+        this.setState({
+          buttonStatus: "in-process",
+          comment: "",
+        })
 
       this.setState({
-        buttonStatus: "in-process",
-        buttonText: `${minutes}:${seconds} / ${minutesDuration}:${secondsDuration}`,
-        message: `До конца спектакля ${countable(minutesTillEnd, ["минута", "минуты", "минут"])} ${countable(secondsTillEnd, ["секунда", "секунды", "секунд"])}`,
-        buttonDisabled: true,
+        message: `${secondsParse(this.audio.currentTime)}/${secondsParse(this.audio.duration)}`,
       })
     }, oneSecond)
+
+    this.audio.play()
+  }
+
+  buyAnotherTicket = () => {
+    const win = window.open("https://tochkadostupa.spb.ru/events/not_to_scale", '_blank')
+    win.focus()
   }
 
 
@@ -226,59 +217,72 @@ class Spekt extends Component {
   }
 
   renderSpekt = () =>
-    <div className="container">
-      <div className="spekt__spekt">
+    <div className="spekt__spekt">
 
-        <div className="spekt__spekt__instructions">
-          1. Нажмите кнопку «начать» одновременно со вторым пользователем.
-          <br />
-          2. После нажатия начнётся обратный отсчёт, вам нужно нажать второй раз на play максимально одновременно
-          <br />
-          3. Обратите внимание, что посмотреть спектакль повторно по одному билету у вас не получится
-        </div>
+      <div className="spekt__spekt__instructions">
+        1. Нажмите кнопку «начать» одновременно со вторым пользователем.
+        <br />
+        2. После нажатия начнётся обратный отсчёт, вам нужно нажать второй раз на play максимально одновременно
+        <br />
+        3. Обратите внимание, что посмотреть спектакль повторно по одному билету у вас не получится
+      </div>
 
-        <div className="spekt__spekt__player">
-          <div
+      <div className="spekt__spekt__player">
+        <div
+          className="spekt__spekt__player__button-area"
+        >
+          <button
             className="spekt__spekt__player__button"
-            onClick={() => this.pressButton}
+            onClick={() => this.pressButton()}
             disabled={this.state.buttonDisabled}
           />
-          <div className="spekt__spekt__player__text">
-            
-          </div>
-          <div className="spekt__spekt__player__comment">
-            {this.state.buttonStatus === "can-restart" &&
-              <button
-                className="spekt__spekt__player__comment__restart"
-                onClick={() => this.restart()}
-              >
-                перезапустить
-              </button>}
-            <div className="spekt__spekt__player__comment__text">
-              {this.state.comment}
-            </div>
+        </div>
+        <div className="spekt__spekt__player__text">
+          {this.state.message}
+        </div>
+        <div className="spekt__spekt__player__comment">
+          {this.state.buttonStatus === "can-restart" &&
+            <button
+              className="spekt__spekt__player__comment__restart"
+              onClick={() => this.restart()}
+            >
+              перезапустить
+            </button>}
+          {this.state.buttonStatus === "buy-another-ticket" &&
+            <button
+              className="spekt__spekt__player__comment__restart"
+              onClick={() => this.buyAnotherTicket()}
+            >
+              купить ещё один билет
+            </button>}
+          <div className="spekt__spekt__player__comment__text">
+            {this.state.comment}
           </div>
         </div>
-
       </div>
+
     </div>
 
   render = () =>
-    <div className="container">
-      <div className="spekt">
-        {/* <Loader disappear={this.state.authorised !== "pending"} /> */}
-        {this.state.authorised === "real" ?
-          this.state.secondUser === "pending" ?
-            <div className="spekt__login__pending">
-              Нарисуйте что-нибудь,<br />пока мы ждем второго<br />пользователя
-            </div>
+    <>
+      {this.state.authorised && !this.state.authorised.match(/none|outdated|many-devices|fake/gm) &&
+        <Header />}
+      <div className="container">
+        <div className="spekt">
+          {/* <Loader disappear={this.state.authorised !== "pending"} /> */}
+          {this.state.authorised === "real" ?
+            this.state.secondUser === "pending" ?
+              <div className="spekt__login__pending">
+                Нарисуйте что-нибудь,<br />пока мы ждем второго<br />пользователя
+              </div>
+              :
+              this.renderSpekt()
             :
-            this.renderSpekt()
-          :
-          this.renderLogin()
-        }
+            this.renderLogin()
+          }
+        </div>
       </div>
-    </div>
+    </>
 }
 
 Spekt.contextType = StoreContext

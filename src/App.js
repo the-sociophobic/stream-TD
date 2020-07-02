@@ -8,7 +8,6 @@ import {
 import { StoreContext, initialState } from 'utils/store'
 import Spekt from 'pages/Spekt'
 import Admin from 'pages/Admin'
-import Header from 'components/Header'
 import Footer from 'components/Footer'
 import Canvas from 'components/Canvas'
 
@@ -30,8 +29,6 @@ class App extends Component {
       <StoreContext.Provider value={this.state}>
         <Canvas />
         <div className="App">
-          {this.state.authorised && !this.state.authorised.match(/none|outdated|many-devices|fake/gm) &&
-            <Header />}
 
           <div className="content">
             <Switch>

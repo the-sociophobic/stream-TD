@@ -26,10 +26,7 @@ export default class store {
         onSuccess && onSuccess()
       else
         setInterval(async () => {
-          const res = (await axios.post(
-            this.props.DBlink,
-            { ticket: ticket },
-          )).data
+          const res = await this.getSessionInfo()
       
           if (res.secondUser === "real")
             onSuccess && onSuccess()

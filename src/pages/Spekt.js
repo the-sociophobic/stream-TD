@@ -106,7 +106,8 @@ class Spekt extends Component {
     switch(buttonStatus) {
       case "never-pressed":
         this.audio = new Audio(this.context.store.audioURL())
-
+        this.audio.load()
+        
         this.audio.addEventListener('canplaythrough', () =>
           this.state.buttonStatus !== "can-restart" &&
             setTimeout(() => {
@@ -148,6 +149,7 @@ class Spekt extends Component {
         this.setState({
           buttonStatus: "buffering",
           message: "Буферизация...",
+          comment: "",
           buttonDisabled: true,
         })
         return

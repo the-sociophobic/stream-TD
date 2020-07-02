@@ -103,7 +103,7 @@ class Spekt extends Component {
   initializeAudio = () => {
     this.audio = new Audio()
         
-    this.audio.addEventListener('canplaythrough', () =>
+    this.audio.addEventListener('loadedmetadata', () =>
       this.state.buttonStatus !== "can-restart" &&
         setTimeout(() => {
           this.setState({
@@ -126,7 +126,7 @@ class Spekt extends Component {
             })
           , oneSecond * (this.state.texts.length - 1))
 
-        }, oneSecond)
+        }, oneSecond * 2)
     )
 
 
@@ -186,7 +186,7 @@ class Spekt extends Component {
       buttonStatus: "can-restart",
       buttonDisabled: true,
       message: `${secondsParse(this.audio.currentTime)}/${secondsParse(this.audio.duration)}`,
-      comment: <>Вы можете перезапустить спектакль <br />в течении первых 60 секунд</>,
+      comment: <>Вы можете перезапустить спектакль <br className="desktop-only" />в течении первых 60&nbsp;секунд</>,
     })
 
     this.playInterval = setInterval(() => {

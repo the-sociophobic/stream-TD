@@ -100,51 +100,61 @@ class Spekt extends Component {
   }
 
 
+  initializeAudio = () => {
+    this.audio = new Audio()
+        
+    this.audio.addEventListener('canplaythrough', () =>
+      this.state.buttonStatus !== "can-restart" &&
+        setTimeout(() => {
+          this.setState({
+            buttonStatus: "countdown",
+            message: `00:00/${secondsParse(this.audio.duration)}`,
+            // comment: <>Нажмите <div className="play-symbol" /> чтобы <br />начать спектакль</>
+            comment: this.state.texts[0]
+          })
+          
+          this.state.texts.slice(1)
+            .forEach((line, index) =>
+              setTimeout(() => 
+                this.setState({comment: line})
+              , oneSecond * (index + 1)))
+
+          setTimeout(() =>
+            this.setState({
+              buttonStatus: "can-play",
+              buttonDisabled: false,
+            })
+          , oneSecond * (this.state.texts.length - 1))
+
+        }, oneSecond)
+    )
+
+
+    this.audio.addEventListener('ended', () =>
+      setTimeout(() => {
+        if (this.playInterval)
+          clearInterval(this.playInterval)
+
+        this.setState({
+          buttonStatus: "buy-another-ticket",
+          comment: "Спасибо за просмотр! Хотите посмотреть ещё, купите билет"
+        })
+
+        this.context.store.logout()
+      }, oneSecond * 5)
+    )
+
+    this.audio.preload = 'auto'
+    this.audio.src = this.context.store.audioURL()
+    this.audio.load()
+  }
+
   pressButton = () => {
     const { buttonStatus } = this.state
 
     switch(buttonStatus) {
       case "never-pressed":
-        this.audio = new Audio(this.context.store.audioURL())
-        this.audio.load()
-        
-        this.audio.addEventListener('canplaythrough', () =>
-          this.state.buttonStatus !== "can-restart" &&
-            setTimeout(() => {
-              this.setState({
-                buttonStatus: "countdown",
-                message: `00:00/${secondsParse(this.audio.duration)}`,
-                // comment: <>Нажмите <div className="play-symbol" /> чтобы <br />начать спектакль</>
-                comment: this.state.texts[0]
-              })
-              
-              this.state.texts.slice(1)
-                .forEach((line, index) =>
-                  setTimeout(() => 
-                    this.setState({comment: line})
-                  , oneSecond * (index + 1)))
-
-              setTimeout(() =>
-                this.setState({
-                  buttonStatus: "can-play",
-                  buttonDisabled: false,
-                })
-              , oneSecond * (this.state.texts.length - 1))
-
-            }, oneSecond))
-
-
-        this.audio.addEventListener('ended', () => setTimeout(() => {
-          if (this.playInterval)
-            clearInterval(this.playInterval)
-
-          this.setState({
-            buttonStatus: "buy-another-ticket",
-            comment: "Спасибо за просмотр! Хотите посмотреть ещё, купите билет"
-          })
-
-          this.context.store.logout()
-        }, oneSecond * 5))
+        this.initializeAudio()
 
         this.setState({
           buttonStatus: "buffering",

@@ -1,23 +1,25 @@
 {
   "files": {
-    "main.css": "/not-to-scale/static/css/main.1d720489.chunk.css",
-    "main.js": "/not-to-scale/static/js/main.13bdd18d.chunk.js",
-    "main.js.map": "/not-to-scale/static/js/main.13bdd18d.chunk.js.map",
+    "main.css": "/not-to-scale/static/css/main.c6e4bce6.chunk.css",
+    "main.js": "/not-to-scale/static/js/main.1e5b5dc2.chunk.js",
+    "main.js.map": "/not-to-scale/static/js/main.1e5b5dc2.chunk.js.map",
     "runtime-main.js": "/not-to-scale/static/js/runtime-main.4e940fa9.js",
     "runtime-main.js.map": "/not-to-scale/static/js/runtime-main.4e940fa9.js.map",
-    "static/js/2.2394dc58.chunk.js": "/not-to-scale/static/js/2.2394dc58.chunk.js",
-    "static/js/2.2394dc58.chunk.js.map": "/not-to-scale/static/js/2.2394dc58.chunk.js.map",
+    "static/js/2.b4275236.chunk.js": "/not-to-scale/static/js/2.b4275236.chunk.js",
+    "static/js/2.b4275236.chunk.js.map": "/not-to-scale/static/js/2.b4275236.chunk.js.map",
     "index.html": "/not-to-scale/index.html",
-    "precache-manifest.e890fff67bebe0549ba27a8bf1c83ba5.js": "/not-to-scale/precache-manifest.e890fff67bebe0549ba27a8bf1c83ba5.js",
+    "precache-manifest.99f42d9e6e708e7ac0935f4fc682c68d.js": "/not-to-scale/precache-manifest.99f42d9e6e708e7ac0935f4fc682c68d.js",
     "service-worker.js": "/not-to-scale/service-worker.js",
-    "static/css/main.1d720489.chunk.css.map": "/not-to-scale/static/css/main.1d720489.chunk.css.map",
-    "static/js/2.2394dc58.chunk.js.LICENSE.txt": "/not-to-scale/static/js/2.2394dc58.chunk.js.LICENSE.txt",
-    "static/media/logoVI.svg": "/not-to-scale/static/media/logoVI.3ede88a1.svg"
+    "static/css/main.c6e4bce6.chunk.css.map": "/not-to-scale/static/css/main.c6e4bce6.chunk.css.map",
+    "static/js/2.b4275236.chunk.js.LICENSE.txt": "/not-to-scale/static/js/2.b4275236.chunk.js.LICENSE.txt",
+    "static/media/index.sass": "/not-to-scale/static/media/cursor.450df923.svg",
+    "static/media/logo-small.svg": "/not-to-scale/static/media/logo-small.babf93f8.svg",
+    "static/media/logo.svg": "/not-to-scale/static/media/logo.2e5601ef.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.4e940fa9.js",
-    "static/js/2.2394dc58.chunk.js",
-    "static/css/main.1d720489.chunk.css",
-    "static/js/main.13bdd18d.chunk.js"
+    "static/js/2.b4275236.chunk.js",
+    "static/css/main.c6e4bce6.chunk.css",
+    "static/js/main.1e5b5dc2.chunk.js"
   ]
 }

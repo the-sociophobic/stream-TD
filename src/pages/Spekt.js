@@ -58,6 +58,8 @@ class Spekt extends Component {
 
       message: "00:00",
       comment: <>Нажмите <PLAY /> чтобы запустить<br />буферизацию</>,
+
+      exitClicked: 0,
     }
   }
 
@@ -75,6 +77,13 @@ class Spekt extends Component {
 
     if (res.userState === "real")
       setTimeout(() => this.login(), 500)
+  }
+
+  logout = () => {
+    console.log("aaa")
+    window.localStorage.removeItem('userId')
+    this.context.store.logout()
+    window.location.reload(false)
   }
 
   login = async () => {
@@ -371,6 +380,10 @@ class Spekt extends Component {
     <>
       {this.state.authorised && !this.state.authorised.match(/none|outdated|many-devices|fake/gm) &&
         <Header />}
+      <button onClick={() => this.logout()} >
+        выйти
+      </button>
+
       <div className="container">
         <div className="spekt">
           {/* <Loader disappear={this.state.authorised !== "pending"} /> */}

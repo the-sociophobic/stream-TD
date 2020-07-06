@@ -130,22 +130,22 @@ class Spekt extends Component {
             comment: this.state.texts[0]
           })
           
-          // this.state.texts.slice(1)
-          //   .forEach((line, index) =>
-          //     setTimeout(() => 
-          //       this.setState({
-          //         comment: line.split('PLAY')
-          //           .reduce((a, b) => <>{a}<PLAY />{b}</>)
-          //       })
-          //     , oneSecond * (index + 1)))
+          this.state.texts.slice(1)
+            .forEach((line, index) =>
+              setTimeout(() => 
+                this.setState({
+                  comment: line.split('PLAY')
+                    .reduce((a, b) => <>{a}<PLAY />{b}</>)
+                })
+              , oneSecond * (index + 1)))
 
           setTimeout(() =>
             this.setState({
               buttonStatus: "can-play",
               buttonDisabled: false,
             })
-          // , oneSecond * (this.state.texts.length - 1))
-          , 100)
+          , oneSecond * (this.state.texts.length - 1))
+          // , 100)
 
         // }, oneSecond * 1)
         }, 100)
@@ -295,7 +295,7 @@ class Spekt extends Component {
       </div>
       <div className="spekt__select__picture">
         <div className="spekt__select__picture__top-list">
-          
+
         </div>
       </div>
     </div>

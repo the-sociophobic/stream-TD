@@ -8,36 +8,36 @@ export default class store {
     axios.defaults.headers.post['Accept'] = "*/*"
     axios.defaults.headers.post['Content-Type'] = "json"
     axios.defaults.withCredentials = true
+
   }
 
-  getSessionInfo = async () =>
-    (await axios.get(this.props.DBlink)).data
+  getSessionInfo = async userId =>
+    (await axios.post(this.props.DBlink, {userId: userId})).data
 
-  login = async (ticket, onSuccess) => {   
+  login = async credentials => {   
     const res = (await axios.post(
-      this.props.DBlink + '/login',
-      { ticket: ticket },
+      this.props.DBlink + '/login/',
+      credentials,
     )).data
 
     // console.log(res)
-
-    if (res.token === "real")
-      if (res.secondUser === "real")
-        onSuccess && onSuccess()
-      else
-        setInterval(async () => {
-          const res = await this.getSessionInfo()
-      
-          if (res.secondUser === "real")
-            onSuccess && onSuccess()
-        }, 2000)
     
     return res
   }
 
-  audioURL = () => this.props.DBlink + '/stream'
+  audioURL = userId =>
+    this.props.DBlink + '/stream/' + userId
 
-  logout = async () =>
+  nextChapter = (userId, currentChapter) =>
+    axios.post(this.props.DBlink + '/next', {
+      userId: userId,
+      currentChapter: currentChapter,
+    })
+
+  logout = async userId =>
     await axios
-      .get(this.props.DBlink + '/logout')
+      .post(
+        this.props.DBlink + '/logout/',
+        { userId: userId }
+      )
 }

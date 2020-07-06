@@ -101,7 +101,7 @@ export default class Header extends Component {
     
 
   render = () =>
-    <div className="canvas">
+    <div className="canvas" ref={this.props.elemRef}>
       <canvas ref={this.canvasRef} />
     </div>
 }

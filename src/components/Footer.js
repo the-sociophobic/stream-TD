@@ -9,7 +9,7 @@ export default class Header extends Component {
   state = {}
 
   render = () =>
-    <div className="footer">
+    <div className="footer" ref={this.props.elemRef} >
       <div className="container">
         <div className="footer__logo">
           <ExternalLink newTab to="https://tochkadostupa.spb.ru">

@@ -14,6 +14,7 @@ class Admin extends React.Component {
     this.state = {
       data: [],
       password: "",
+      // loggedIn: true,
       loggedIn: false,
       file: undefined,
     }
@@ -52,6 +53,16 @@ class Admin extends React.Component {
           number: data[index][0],
         }))).json())
       
+    await this.loadData()
+  }
+
+  restore = async ticket => {
+    console.log(ticket)
+    await fetch(`https://schedule.tochkadostupa.spb.ru/api/nottoscaleticket/destroy/${ticket.id}`)
+    await fetch(`https://schedule.tochkadostupa.spb.ru/api/nottoscaleticket/create?${encodeParams({
+      number: ticket.number
+    })}`)
+
     await this.loadData()
   }
 
@@ -119,6 +130,12 @@ class Admin extends React.Component {
                   </div>
                   <div className="admin__tickets__item__user--1">
                     {ticket.user1 ? `вошёл ${formatISO9075(new Date(ticket.user1.logged), 'dd/mm/yyyy').replace('2020-', '').replace('07-', '')}` : "--"}
+                  </div>
+                  <div
+                    className="admin__tickets__item__restore"
+                    onClick={() => this.restore(ticket)}
+                  >
+                    Обнулить
                   </div>
                 </div>
             )}

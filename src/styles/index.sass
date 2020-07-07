@@ -99,6 +99,7 @@ $break-point: 1024px
     @extend .d-flex
     @extend .flex-column
     @extend .justify-content-center
+    
   .spekt
     &__login
       &__desc
@@ -196,11 +197,6 @@ $break-point: 1024px
                 right: -35%
               &--selected
                 background-color: black
-
-
-
-              
-        &__bottom
     &__spekt
       @extend .d-flex
       @extend .justify-content-between
@@ -265,6 +261,35 @@ $break-point: 1024px
             text-align: center
             @extend .noselect
 
+
+  .admin
+    @extend .d-flex
+    @extend .flex-column
+    @extend .align-items-center
+    .container
+      height: 100%
+    &__file
+      @extend .mb-4
+    &__tickets
+      width: 100%
+      overflow-y: scroll
+      &__item
+        width: 100%
+        @extend .d-flex
+        @extend .flex-row
+        @extend .justify-content-between
+        *
+          white-space: nowrap
+          text-overflow: ellipsis
+        &__index
+          width: 40px
+        &__number
+          width: 20%
+        &__used
+          width: 15%
+        &__user--0, &__user--1
+          width: 25%
+
   .play-symbol
     display: inline-block
     width: 12px
@@ -278,7 +303,6 @@ $break-point: 1024px
 
 
 
-  .admin
     
 
 

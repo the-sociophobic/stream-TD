@@ -162,8 +162,8 @@ class Spekt extends Component {
 
 
     this.audio.addEventListener('ended', () => {
-      if (this.playInterval)
-        clearInterval(this.playInterval)
+      // if (this.playInterval)
+      //   clearInterval(this.playInterval)
 
       setTimeout(() => {
         this.setState({
@@ -202,51 +202,52 @@ class Spekt extends Component {
 
   restart = () => {
     this.audio.pause()
-    this.audio.currentTime = this.state.chapters[this.state.currentChapter].time
-    if (this.playInterval) {
-      clearInterval(this.playInterval)
-      this.playInterval = null
-    }
+    this.audio.currentTime = 0
+    // this.audio.currentTime = this.state.chapters[this.state.currentChapter].time
+    // if (this.playInterval) {
+    //   clearInterval(this.playInterval)
+    //   this.playInterval = null
+    // }
     this.play()
   }
 
   play = () => {
-    if (this.playInterval)
-      return
+    // if (this.playInterval)
+    //   return
 
-    this.audio.currentTime = this.state.chapters[this.state.currentChapter].time
+    // this.audio.currentTime = this.state.chapters[this.state.currentChapter].time
 
     this.setState({
       buttonStatus: "can-restart",
       buttonDisabled: true,
       message: `${secondsParse(this.audio.currentTime)}/${secondsParse(this.audio.duration)}`,
-      // comment: <>Вы можете перезапустить спектакль <br className="desktop-only" />в течении первых 60&nbsp;секунд</>,
-      comment: this.state.chapters[this.state.currentChapter].name,
+      comment: <>Вы можете перезапустить спектакль <br className="desktop-only" />в течении первых 60&nbsp;секунд</>,
+      // comment: this.state.chapters[this.state.currentChapter].name,
     })
 
-    this.playInterval = setInterval(() => {
-      // if (this.audio.currentTime > 60 && this.state.buttonStatus === "can-restart")
-      //   this.setState({
-      //     buttonStatus: "in-process",
-      //     comment: "",
-      //   })
+    this.audio.addEventListener('timeupdate', () => {
+      if (this.audio.currentTime > 60 && this.state.buttonStatus === "can-restart")
+        this.setState({
+          buttonStatus: "in-process",
+          comment: "",
+        })
 
-      console.log(this.audio.duration)
+      // console.log(this.audio.duration)
       this.setState({
         message: `${secondsParse(this.audio.currentTime)}/${secondsParse(this.audio.duration)}`,
-        comment: this.state.chapters[this.state.currentChapter].name
+        // comment: this.state.chapters[this.state.currentChapter].name
       })
 
-      const nextChapterStart = this.state.currentChapter < this.state.chapters.length - 1 ?
-        this.state.chapters[this.state.currentChapter + 1].time
-        :
-        this.audio.duration
-      if (this.audio.currentTime > nextChapterStart) {
-        this.context.store.nextChapter(this.state.userId, this.state.currentChapter)
-        if (this.state.currentChapter < this.state.chapters.length - 1)
-          this.setState({currentChapter: this.state.currentChapter + 1})
-      }
-    }, oneSecond)
+      // const nextChapterStart = this.state.currentChapter < this.state.chapters.length - 1 ?
+      //   this.state.chapters[this.state.currentChapter + 1].time
+      //   :
+      //   this.audio.duration
+      // if (this.audio.currentTime > nextChapterStart) {
+      //   this.context.store.nextChapter(this.state.userId, this.state.currentChapter)
+      //   if (this.state.currentChapter < this.state.chapters.length - 1)
+      //     this.setState({currentChapter: this.state.currentChapter + 1})
+      // }
+    })
 
     this.audio.play()
   }
@@ -278,7 +279,7 @@ class Spekt extends Component {
     return (
       <div className="spekt__login">
         <div className="spekt__login__desc">
-          <b>Not to scale</b> — это спектакль Энта Хэмптона и Тима Этчелса. Вам понадобятся наушники, карандаш, ластик, и лист бумаги. И второй человек. Введите номер вашего билета, нажмите кнопку «начать» и следуйте инструкциям.
+          <b>Not to Scale</b> — это спектакль Энта Хэмптона и Тима Этчелса. Вам понадобятся две пары наушников, два простых карандаша (и один про запас), пара ластиков и 9 листов белой бумаги A4. И второй зритель, который находится рядом с вами. Для просмотра введите «Код для доступа к спектаклю» из билета на двух устройствах, нажмите кнопку «начать» и следуйте инструкциям.
         </div>
         <Input
           className={error && "form-group__input--danger"}
@@ -303,9 +304,13 @@ class Spekt extends Component {
         Выберите место за столом
       </div>
       <div className="spekt__select__picture">
-        <div className="spekt__select__picture__top-list">
-
-        </div>
+        <div className="spekt__select__picture__list--top" />
+        <div
+          className="spekt__select__picture__list--left"
+        />
+        <div
+          className="spekt__select__picture__list--right"
+        />
       </div>
     </div>
 
@@ -325,7 +330,7 @@ class Spekt extends Component {
 
         Дальше…<br /><br />
 
-        Сядьте {this.state.left ? <b>слева</b> : <b>справа</b>} от другого участника перед поверхностью, на которой будете рисовать. Включите на телефоне режим «не беспокоить». Удостоверьитесь, что режим экономии энергии выключен и экран устройства не погаснет. Наденьте наушники. Положите перед собой по листу бумаги вертикально, в книжной ориентации.
+        Сядьте {this.state.left ? <b>слева</b> : <b>справа</b>} от другого участника перед поверхностью, на которой будете рисовать. Включите на телефоне режим «не беспокоить». Удостоверьтесь, что режим экономии энергии выключен и экран устройства не погаснет. Наденьте наушники. Положите перед собой по листу бумаги вертикально, в книжной ориентации.
         Остальные листы бумаги положите в стопку.<br /><br />
         1. Нажмите кнопку <PLAY /> одновременно со вторым пользователем.
         <br />
@@ -380,9 +385,9 @@ class Spekt extends Component {
     <>
       {this.state.authorised && !this.state.authorised.match(/none|outdated|many-devices|fake/gm) &&
         <Header />}
-      <button onClick={() => this.logout()} >
+      {/* <button onClick={() => this.logout()} >
         выйти
-      </button>
+      </button> */}
 
       <div className="container">
         <div className="spekt">

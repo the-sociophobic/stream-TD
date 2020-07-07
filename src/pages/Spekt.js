@@ -385,9 +385,9 @@ class Spekt extends Component {
     <>
       {this.state.authorised && !this.state.authorised.match(/none|outdated|many-devices|fake/gm) &&
         <Header />}
-      {/* <button onClick={() => this.logout()} >
+      <button onClick={() => this.logout()} >
         выйти
-      </button> */}
+      </button>
 
       <div className="container">
         <div className="spekt">

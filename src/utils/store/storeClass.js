@@ -34,6 +34,16 @@ export default class store {
       currentChapter: currentChapter,
     })
 
+  selectSide = async (ticket, left) =>
+    await axios
+      .post(
+        this.props.DBlink + '/select-side/',
+        {
+          ticket: ticket,
+          left: left,
+        }
+      )
+
   logout = async userId =>
     await axios
       .post(

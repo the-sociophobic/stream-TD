@@ -110,6 +110,97 @@ $break-point: 1024px
         left: 50%
         transform: translate(-50%, -50%)
         text-align: center
+    &__select
+      @extend .d-flex
+      @extend .flex-column
+      @media screen and ( min-width: 1025px )
+        flex-direction: row !important
+        *
+          width: 100%
+      &__wait
+        @extend .d-flex
+        @extend .flex-column
+        @extend .justify-content-center
+        @extend .align-items-center
+        &__button
+          @extend .button
+          @extend .button--black
+          @extend .my-3
+      &__desc
+        @extend .mb-4
+        @extend .noselect
+        @extend .d-flex
+        @extend .flex-column
+        &__button
+          @extend .button
+          @extend .button--black
+          @extend .my-3
+          max-width: 200px
+      &__picture
+        @extend .d-flex
+        @extend .flex-column
+        @extend .justify-content-around
+        border: 2px solid black
+        border-radius: 25px
+        height: 60vh
+        &__top
+          @extend .d-flex
+          @extend .justify-content-around
+          &__list
+            width: 15%
+            padding-top: 21%
+            position: relative
+            border: 2px solid black
+            background-color: white
+            &::before, &::after
+              content: ''
+              position: absolute
+              top: 0
+              right: 0
+              width: calc(100% + 2px)
+              height: calc(100% + 2px)
+              border: 2px solid black
+              background-color: white
+            &::before
+              transform: translate(-4px, 4px)
+            &::after
+              transform: translate(-10px, 10px)
+        &__bottom
+          @extend .d-flex
+          @extend .flex-row
+          @extend .justify-content-around
+          &__left, &__right
+            text-align: center
+            width: 15%
+            &__list
+              @extend .mt-3
+              width: 100%
+              padding-top: 141%
+              position: relative
+              border: 2px solid black
+              background-color: white
+              position: relative
+              &::before, &::after
+                content: ''
+                position: absolute
+                background-color: black
+                border-radius: 3px
+                bottom: -2%
+              &::before
+                width: 6%
+                height: 50%
+                right: -18%
+              &::after
+                width: 12%
+                height: 14%
+                right: -35%
+              &--selected
+                background-color: black
+
+
+
+              
+        &__bottom
     &__spekt
       @extend .d-flex
       @extend .justify-content-between
@@ -169,12 +260,7 @@ $break-point: 1024px
           padding: 15px 0 35px
           &__restart
             @extend .button
-            height: 38px
-            line-height: 38px
-            background-color: black !important
-            border-radius: 50px
-            color: white
-            padding: 0 20px
+            @extend .button--black
           &__text
             text-align: center
             @extend .noselect
@@ -252,6 +338,13 @@ $input-height: 260px
       color: #ff0000
       border-color: #ff0000
       cursor: not-allowed !important
+  &--black
+    height: 38px
+    line-height: 38px
+    background-color: black !important
+    border-radius: 50px
+    color: white
+    padding: 0 20px
 
   
 

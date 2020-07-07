@@ -59,7 +59,7 @@ class Spekt extends Component {
       message: "00:00",
       comment: <>Нажмите <PLAY /> чтобы запустить<br />буферизацию</>,
 
-      exitClicked: 0,
+      left: undefined,
     }
   }
 
@@ -73,6 +73,8 @@ class Spekt extends Component {
       authorised: res.userState,
       secondUser: res.secondUser,
       ticket: res.ticket || "",
+      canSelect: res.canSelect,
+      left: res.left,
     })
 
     if (res.userState === "real")
@@ -80,7 +82,6 @@ class Spekt extends Component {
   }
 
   logout = () => {
-    console.log("aaa")
     window.localStorage.removeItem('userId')
     this.context.store.logout()
     window.location.reload(false)
@@ -258,6 +259,12 @@ class Spekt extends Component {
   }
 
 
+  selectSide = async () => {
+    await this.context.store.selectSide(this.state.ticket, this.state.left)
+    this.setState({canSelect: undefined})
+  }
+
+
   renderLogin = () => {
     const error = this.state.authorised && this.state.authorised.match(/outdated|many-devices|fake/gm)
     let buttonText
@@ -283,7 +290,7 @@ class Spekt extends Component {
         </div>
         <Input
           className={error && "form-group__input--danger"}
-          placeholder="Введите номер вашего билета"
+          placeholder="Введите код доступа к спектаклю"
           value={this.state.ticket}
           onChange={value => this.setState({ticket: value, authorised: ""})}
         />
@@ -299,20 +306,67 @@ class Spekt extends Component {
   }
 
   renderSelect = () =>
-    <div className="spekt__select">
+    this.state.canSelect ?
       <div className="spekt__select">
-        Выберите место за столом
+        <div className="spekt__select__desc">
+          Выберите место за столом
+          {typeof this.state.left !== "undefined" &&
+            <button
+              className="spekt__select__desc__button"
+              onClick={() => this.selectSide()}
+            >
+              продолжить
+            </button>}
+        </div>
+        <div className="spekt__select__picture">
+          <div className="spekt__select__picture__top">
+            <div className="spekt__select__picture__top__list" />
+          </div>
+
+          <div className="spekt__select__picture__bottom">
+            <div
+              className="spekt__select__picture__bottom__left"
+              onClick={() => this.setState({left: true})}
+            >
+              Слева
+              <div
+                className={`spekt__select__picture__bottom__left__list ${
+                  this.state.left === true && "spekt__select__picture__bottom__left__list--selected"}`}
+              />
+            </div>
+            <div
+              className="spekt__select__picture__bottom__right"
+              onClick={() => this.setState({left: false})}
+            >
+              Справа
+              <div
+                className={`spekt__select__picture__bottom__right__list ${
+                  this.state.left === false && "spekt__select__picture__bottom__right__list--selected"}`}
+              />
+            </div>
+          </div>
+
+        </div>
       </div>
-      <div className="spekt__select__picture">
-        <div className="spekt__select__picture__list--top" />
-        <div
-          className="spekt__select__picture__list--left"
-        />
-        <div
-          className="spekt__select__picture__list--right"
-        />
+      :
+      <div className="spekt__select">
+        <div className="spekt__select__wait">
+          Дождитесь, пока второй пользователь выберет место и нажмите
+          <button
+            className="spekt__select__wait__button"
+            onClick={async () => {
+              await this.getSessionInfo()
+              if (typeof this.state.left === "undefined") {
+                this.setState({didNotSelectAlert: true})
+                setTimeout(() => this.setState({didNotSelectAlert: false}), oneSecond * 4)
+              }
+            }}
+          >
+            продолжить
+          </button>
+          {this.state.didNotSelectAlert && "второй пользователь ещё не определился, можете его поторопить!"}
+        </div>
       </div>
-    </div>
 
   renderSpekt = () =>
     <div className="spekt__spekt">
@@ -385,11 +439,13 @@ class Spekt extends Component {
     <>
       {this.state.authorised && !this.state.authorised.match(/none|outdated|many-devices|fake/gm) &&
         <Header />}
-      <button onClick={() => this.logout()} >
-        выйти
-      </button>
 
       <div className="container">
+        {this.state.ticket.includes('testt') &&
+          <button onClick={() => this.logout()} >
+            выйти
+          </button>}
+
         <div className="spekt">
           {/* <Loader disappear={this.state.authorised !== "pending"} /> */}
           {this.state.authorised === "real" ?
@@ -398,7 +454,7 @@ class Spekt extends Component {
                 Нарисуйте что-нибудь,<br />пока мы ждем второго<br />пользователя
               </div>
               :
-              this.state.canSelect ?
+              typeof this.state.canSelect !== "undefined" ?
                 this.renderSelect()
                 :
                 this.renderSpekt()

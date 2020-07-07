@@ -7,7 +7,7 @@ import React from 'react'
   render = () =>
     <div className="header">
       <div className="container">
-        <b>Not to scale</b>
+        <b>Not to Scale</b>
       </div>
     </div>
 }

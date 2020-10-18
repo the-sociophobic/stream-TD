@@ -4,6 +4,7 @@ import axios from 'axios'
 export default class store {
   constructor(props) {
     this.props = props
+    this.DBlink = props.DBlink
 
     axios.defaults.headers.post['Accept'] = "*/*"
     axios.defaults.headers.post['Content-Type'] = "json"

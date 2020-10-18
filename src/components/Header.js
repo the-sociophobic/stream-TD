@@ -8,6 +8,12 @@ import React from 'react'
     <div className="header">
       <div className="container">
         <b>Not to Scale</b>
+        <button
+          className="header__exit"
+          onClick={() => this.props.exit()}
+        >
+          выйти
+        </button>
       </div>
     </div>
 }

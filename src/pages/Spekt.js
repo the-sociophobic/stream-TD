@@ -441,10 +441,10 @@ class Spekt extends Component {
         <Header />}
 
       <div className="container">
-        {this.state.ticket.includes('testt') &&
+        {/* {this.state.ticket.includes('testt') &&
           <button onClick={() => this.logout()} >
             выйти
-          </button>}
+          </button>} */}
 
         <div className="spekt">
           {/* <Loader disappear={this.state.authorised !== "pending"} /> */}

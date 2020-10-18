@@ -5,6 +5,7 @@ import fetch from 'isomorphic-unfetch'
 
 import Input from 'components/Input'
 import { StoreContext } from 'utils/store'
+import withRouter from 'components/withRouterAndRef'
 import encodeParams from 'utils/encodeParams'
 
 
@@ -14,18 +15,17 @@ class Admin extends React.Component {
     this.state = {
       data: [],
       password: "",
-      // loggedIn: true,
-      loggedIn: false,
+      loggedIn: process.env.NODE_ENV === 'development',
       file: undefined,
     }
   }
 
   loadData = async () => {
     this.setState({
-      data: await (await fetch("https://schedule.tochkadostupa.spb.ru/api/nottoscaleticket?limit=5000")).json(),
-      users: await (await fetch("https://schedule.tochkadostupa.spb.ru/api/nottoscaleuser?limit=5000")).json(),
+      data: await (await fetch(`${this.context.store.DBlink.replace('not-to-scale/','')}/nottoscaleticket?limit=5000`)).json(),
+      users: await (await fetch(`${this.context.store.DBlink.replace('not-to-scale/','')}/nottoscaleuser?limit=5000`)).json(),
     })
-    // console.log(await (await fetch("https://schedule.tochkadostupa.spb.ru/api/nottoscaleticket?limit=5000")).json())
+    // console.log(await (await fetch(`${this.context.store.DBlink.replace('not-to-scale/','')}/nottoscaleticket?limit=5000`)).json())
   }
 
   deleteData = async () => {
@@ -38,7 +38,7 @@ class Admin extends React.Component {
         JSON.stringify(
           await (
             await fetch(
-              "https://schedule.tochkadostupa.spb.ru/api/nottoscaleticket/destroy/" + data[index].id
+              `${this.context.store.DBlink.replace('not-to-scale/','')}/nottoscaleticket/destroy/` + data[index].id
             )
           ).json())}`)      
   }
@@ -48,7 +48,7 @@ class Admin extends React.Component {
 
     for (let index in data)
       console.log(await (await fetch(
-        "https://schedule.tochkadostupa.spb.ru/api/nottoscaleticket/create?" +
+        `${this.context.store.DBlink.replace('not-to-scale/','')}/nottoscaleticket/create?` +
         encodeParams({
           number: data[index][0],
         }))).json())
@@ -58,8 +58,8 @@ class Admin extends React.Component {
 
   restore = async ticket => {
     console.log(ticket)
-    await fetch(`https://schedule.tochkadostupa.spb.ru/api/nottoscaleticket/destroy/${ticket.id}`)
-    await fetch(`https://schedule.tochkadostupa.spb.ru/api/nottoscaleticket/create?${encodeParams({
+    await fetch(`${this.context.store.DBlink.replace('not-to-scale/','')}/nottoscaleticket/destroy/${ticket.id}`)
+    await fetch(`${this.context.store.DBlink.replace('not-to-scale/','')}/nottoscaleticket/create?${encodeParams({
       number: ticket.number
     })}`)
 
@@ -147,4 +147,4 @@ class Admin extends React.Component {
 
 Admin.contextType = StoreContext
 
-export default Admin
+export default withRouter(Admin)

@@ -17,9 +17,9 @@ export default class Header extends Component {
     this.canvasRef = React.createRef()
 
     if (isTouchDevice()) {
-      document.addEventListener('touchmove', e => this.drawTouch(e))
-      document.addEventListener('touchstart', e => { this.pressed = true; this.setPosTouch(e) })
-      document.addEventListener('touchend', e => { this.pressed = false; this.setPosTouch(e) })
+      // document.addEventListener('touchmove', e => this.drawTouch(e))
+      // document.addEventListener('touchstart', e => { this.pressed = true; this.setPosTouch(e) })
+      // document.addEventListener('touchend', e => { this.pressed = false; this.setPosTouch(e) })
     } else {
       document.addEventListener('mousemove', e => this.draw(e))
       document.addEventListener('mousedown', e => this.setPos(e))

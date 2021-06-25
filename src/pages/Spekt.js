@@ -14,6 +14,45 @@ const oneSecond = 1000
 const PLAY = () =>
   <div className="play-symbol" />
 
+const texts = [
+  "5. Включите на телефоне режим не беспокоить, отключите уведомления",
+  "4. Расслабьтесь",
+  "3. Мы уже скоро начнём",
+  "2. Приготовьтесь",
+  "1. Вам нужно одновременно на двух устройствах нажать на PLAY ",
+  "0. Можно нажимать на PLAY ",
+]
+const chapters = [
+  {
+    name: "вступление",
+    time: 0 * 60 + 0,
+  },
+  {
+    name: "часть 1",
+    time: 1 * 60 + 9,
+  },
+  {
+    name: "часть 2",
+    time: 6 * 60 + 40,
+  },
+  {
+    name: "часть 3",
+    time: 14 * 60 + 42,
+  },
+  {
+    name: "часть 4",
+    time: 24 * 60 + 45,
+  },
+  {
+    name: "часть 5",
+    time: 42 * 60 + 25,
+  },
+  {
+    name: "часть 6",
+    time: 50 * 60 + 52,
+  },
+]
+
 
 class Spekt extends Component {
   constructor(props) {
@@ -31,6 +70,10 @@ class Spekt extends Component {
         undefined
 
     this.state = {
+      texts: texts,
+      chapters: chapters,
+      phase: typeof left === 'undefined' ? 'start' : 'continue',
+
       ticket: "",
 
       /*
@@ -103,46 +146,50 @@ class Spekt extends Component {
     window.localStorage.removeItem('left')
     // this.context.store.logout()
     // window.location.reload(false)
-    this.setState({ left: undefined })
+    this.setState({
+      phase: 'start',
+      left: undefined
+    })
   }
 
   login = async () => {
-    this.setState({
-      authorised: "pending",
-      secondUser: "real"
-    })
+    this.setState({ phase: 'continue' })
+    // this.setState({
+    //   authorised: "pending",
+    //   secondUser: "real"
+    // })
     
-    const res = await this.context.store
-      .login({
-        ticket: this.state.ticket || "a",
-        userId: this.state.userId,
-      })
+    // const res = await this.context.store
+    //   .login({
+    //     ticket: this.state.ticket || "a",
+    //     userId: this.state.userId,
+    //   })
 
-    console.log(res)
+    // console.log(res)
 
-    if (res.userState === "real") {
-      this.setState({
-        userId: res.userId,
-        authorised: "real",
-        ticket: res.ticket,
-        texts: res.texts,
-        left: res.left,
-        canSelect: res.canSelect,
-        chapters: res.chapters,
-        currentChapter: res.currentChapter,
-        message: secondsParse(res.chapters[res.currentChapter].time),
-      })
+    // if (res.userState === "real") {
+    //   this.setState({
+    //     userId: res.userId,
+    //     authorised: "real",
+    //     ticket: res.ticket,
+    //     texts: res.texts,
+    //     left: res.left,
+    //     canSelect: res.canSelect,
+    //     chapters: res.chapters,
+    //     currentChapter: res.currentChapter,
+    //     message: secondsParse(res.chapters[res.currentChapter].time),
+    //   })
 
-      // console.log(res)
+    //   // console.log(res)
       
-      // this.props.history.push({
-      //   pathname: this.props.location.path,
-      //   search: "?" + new URLSearchParams({q: res.userId}).toString()
-      // })
-      window.localStorage.setItem('userId', res.userId)
-    }
-    else
-      this.setState({authorised: res.userState})
+    //   // this.props.history.push({
+    //   //   pathname: this.props.location.path,
+    //   //   search: "?" + new URLSearchParams({q: res.userId}).toString()
+    //   // })
+    //   window.localStorage.setItem('userId', res.userId)
+    // }
+    // else
+    //   this.setState({authorised: res.userState})
   }
 
 
@@ -188,7 +235,7 @@ class Spekt extends Component {
       setTimeout(() => {
         this.setState({
           buttonStatus: "buy-another-ticket",
-          comment: "Спасибо за просмотр! Хотите посмотреть ещё, купите билет"
+          comment: "Спасибо за просмотр!"
         })
 
         this.context.store.logout(this.state.userId)
@@ -307,16 +354,16 @@ class Spekt extends Component {
         <div className="spekt__login__desc">
           <b>Not to Scale</b> — это спектакль Энта Хэмптона и Тима Этчелса. Вам понадобятся две пары наушников, два простых карандаша (и один про запас), пара ластиков и 9 листов белой бумаги A4. И второй зритель, который находится рядом с вами. Для просмотра введите «Код для доступа к спектаклю» из билета на двух устройствах, нажмите кнопку «начать» и следуйте инструкциям.
         </div>
-        <Input
+        {/* <Input
           className={error && "form-group__input--danger"}
           placeholder="Введите код доступа к спектаклю"
           value={this.state.ticket}
           onChange={value => this.setState({ticket: value, authorised: ""})}
-        />
+        /> */}
         <button
           className={`button button--main ${error && "button--main--danger"}`}
           onClick={() => this.login()}
-          disabled={!this.state.ticket || this.state.ticket.length < 5}
+          // disabled={!this.state.ticket || this.state.ticket.length < 5}
         >
           {buttonText}
         </button>
@@ -439,13 +486,13 @@ class Spekt extends Component {
             >
               перезапустить
             </button>}
-          {this.state.buttonStatus === "buy-another-ticket" &&
+          {/* {this.state.buttonStatus === "buy-another-ticket" &&
             <button
               className="spekt__spekt__player__comment__restart"
               onClick={() => this.buyAnotherTicket()}
             >
               купить ещё один билет
-            </button>}
+            </button>} */}
           <div className="spekt__spekt__player__comment__text">
             {this.state.comment}
           </div>
@@ -464,10 +511,13 @@ class Spekt extends Component {
 
       <div className="container">
         <div className="spekt">
-          {typeof this.state.left === "undefined" ?
-            this.renderSelect()
+          {this.state.phase === 'start' ?
+            this.renderLogin()
             :
-            this.renderSpekt()
+            typeof this.state.left === "undefined" ?
+              this.renderSelect()
+              :
+              this.renderSpekt()
           }
         </div>
       </div>

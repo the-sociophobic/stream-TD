@@ -20,7 +20,15 @@ class Spekt extends Component {
     super(props)
 
     // const userId = new URLSearchParams(window.location.search).get("q")
-    const userId = window.localStorage.getItem('userId')
+    // const userId = window.localStorage.getItem('userId')
+    const leftAsString = window.localStorage.getItem('left')
+    const left = leftAsString === 'true' ?
+      true
+      :
+      leftAsString === 'false' ?
+        false
+        :
+        undefined
 
     this.state = {
       ticket: "",
@@ -35,14 +43,17 @@ class Spekt extends Component {
         none
         pending
       */
-      authorised: "pending",
-      userId: userId || "",
+      // authorised: "pending",
+      authorised: "real",
+      // userId: userId || "",
+      userId: "",
 
       /*
         real
         pending
       */
-      secondUser: "pending",
+      // secondUser: "pending",
+      secondUser: "real",
 
       /*
         never-pressed
@@ -59,32 +70,40 @@ class Spekt extends Component {
       message: "00:00",
       comment: <>Нажмите <PLAY /> чтобы запустить<br />буферизацию</>,
 
-      left: undefined,
+      left: typeof left === 'boolean' ? left : undefined,
+      canSelect: true,
     }
   }
 
-  componentDidMount = () =>
-    this.getSessionInfo()
+  // componentDidMount = () =>
+  //   this.getSessionInfo()
 
   getSessionInfo = async () => {
-    const res = await this.context.store.getSessionInfo(this.state.userId)
+    // const res = await this.context.store.getSessionInfo(this.state.userId)
 
     this.setState({
-      authorised: res.userState,
-      secondUser: res.secondUser,
-      ticket: res.ticket || "",
-      canSelect: res.canSelect,
-      left: res.left,
+      // authorised: res.userState,
+      // secondUser: res.secondUser,
+      // ticket: res.ticket || "",
+      // canSelect: res.canSelect,
+      // left: res.left,
+      authorised: 'real',
+      secondUser: 'real',
+      ticket: '',
+      canSelect: true,
+      // left: undefined,
     })
 
-    if (res.userState === "real")
-      setTimeout(() => this.login(), 500)
+    // if (res.userState === "real")
+    //   setTimeout(() => this.login(), 500)
   }
 
   logout = () => {
-    window.localStorage.removeItem('userId')
-    this.context.store.logout()
-    window.location.reload(false)
+    // window.localStorage.removeItem('userId')
+    window.localStorage.removeItem('left')
+    // this.context.store.logout()
+    // window.location.reload(false)
+    this.setState({ left: undefined })
   }
 
   login = async () => {
@@ -260,7 +279,7 @@ class Spekt extends Component {
 
 
   selectSide = async () => {
-    await this.context.store.selectSide(this.state.ticket, this.state.left)
+    // await this.context.store.selectSide(this.state.ticket, this.state.left)
     this.setState({canSelect: undefined})
   }
 
@@ -326,7 +345,10 @@ class Spekt extends Component {
           <div className="spekt__select__picture__bottom">
             <div
               className="spekt__select__picture__bottom__left"
-              onClick={() => this.setState({left: true})}
+              onClick={() => {
+                window.localStorage.setItem('left', true)
+                this.setState({ left: true })
+              }}
             >
               Слева
               <div
@@ -336,7 +358,10 @@ class Spekt extends Component {
             </div>
             <div
               className="spekt__select__picture__bottom__right"
-              onClick={() => this.setState({left: false})}
+              onClick={() => {
+                window.localStorage.setItem('left', false)
+                this.setState({ left: false })
+              }}
             >
               Справа
               <div
@@ -355,7 +380,7 @@ class Spekt extends Component {
           <button
             className="spekt__select__wait__button"
             onClick={async () => {
-              await this.getSessionInfo()
+              // await this.getSessionInfo()
               if (typeof this.state.left === "undefined") {
                 this.setState({didNotSelectAlert: true})
                 setTimeout(() => this.setState({didNotSelectAlert: false}), oneSecond * 4)
@@ -391,12 +416,6 @@ class Spekt extends Component {
         2. После нажатия начнётся обратный отсчёт, вам нужно нажать второй раз на <PLAY /> максимально одновременно
         <br />
         3. Обратите внимание, что посмотреть спектакль повторно по одному билету у вас не получится
-        {/* {typeof this.state.left !== "undefined" &&
-          this.state.left ?
-            <><br /><br /><b>Пожалуйста, сядьте слева</b></>
-            :
-            <><br /><br /><b>Пожалуйста, сядьте справа</b></>
-          } */}
       </div>
 
       <div className="spekt__spekt__player">
@@ -437,29 +456,18 @@ class Spekt extends Component {
 
   render = () =>
     <>
-      {this.state.authorised && !this.state.authorised.match(/none|outdated|many-devices|fake/gm) &&
-        <Header />}
+      {typeof this.state.left !== "undefined" &&
+        <Header
+          exit={this.logout}
+        />
+      }
 
       <div className="container">
-        {/* {this.state.ticket.includes('testt') &&
-          <button onClick={() => this.logout()} >
-            выйти
-          </button>} */}
-
         <div className="spekt">
-          {/* <Loader disappear={this.state.authorised !== "pending"} /> */}
-          {this.state.authorised === "real" ?
-            this.state.secondUser === "pending" ?
-              <div className="spekt__login__pending">
-                Нарисуйте что-нибудь,<br />пока мы ждем второго<br />пользователя
-              </div>
-              :
-              typeof this.state.canSelect !== "undefined" ?
-                this.renderSelect()
-                :
-                this.renderSpekt()
+          {typeof this.state.left === "undefined" ?
+            this.renderSelect()
             :
-            this.renderLogin()
+            this.renderSpekt()
           }
         </div>
       </div>

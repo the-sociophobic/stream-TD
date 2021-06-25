@@ -197,7 +197,7 @@ class Spekt extends Component {
     })
 
     this.audio.preload = 'auto'
-    this.audio.src = this.context.store.audioURL(this.state.userId)
+    this.audio.src = `https://storage.yandexcloud.net/cdn.tochkadostupa.spb.ru/the_sociophobic/not-to-scale/${this.state.left ? 'L' : 'R'}.mp3`
     this.audio.load()
   }
 
